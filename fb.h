@@ -60,7 +60,8 @@ fb_status_t cast_triangle(const triangle_t *triangle, fb_t *fb, uint32_t col);
 
 #ifdef DEBUG
 #include <stdio.h>
-int print_triangle(const triangle_t *const triangle, const char *const alias); 
+#include <string.h>
+void print_triangle(const triangle_t *const triangle, const char *const alias); 
 #else
 #define print_triangle(...) ((void)0)
 #endif

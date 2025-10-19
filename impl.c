@@ -26,17 +26,17 @@ int main() {
 
     srand(time(NULL));
 
+    // TODO: fix segfault issue, potential cause: x or y coordinate is 0?
+    // could be related to the issue where 2 180 degree rotated triangles are rendered instead of 1
+    // so (x, y) turns into (-x, -y) for some reason
     while (fgetc(stdin)) {
-        const triangle_t tri_n = TRIANGLE(rand_int(1920), rand_int(1080), rand_int(1920), rand_int(1080));
-        printf("%d\n", rand_int(0xFFFFFFFF));
+        // const triangle_t tri_n = TRIANGLE({ rand_int(1920), rand_int(1080) }, { rand_int(1920), rand_int(1080) }, { 0, 0 });
+        const triangle_t tri_n = TRIANGLE({ rand_int(1920), rand_int(1080) }, { rand_int(1920), rand_int(1080) }, { rand_int(1920), rand_int(1080) });
+        // const triangle_t tri_n = TRIANGLE({ 0, 100 }, { 604, 0 }, { 0, 0 });
         cast_triangle(&tri_n, &fb, rand_int(0xFFFFFFFF));
     }
 
     fb_deinit(&fb);
-
-    #ifdef DEBUG
-    printf("%s\n", "debug works");
-    #endif
 
     return errno;
 }

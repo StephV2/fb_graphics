@@ -1,8 +1,7 @@
 #include <fcntl.h>
 #include <linux/fb.h>
 #include <stdint.h>
-// #include <stdlib.h>
-// #include <string.h>
+#include <stdlib.h>
 #include <sys/ioctl.h>
 #include <sys/mman.h>
 #include <unistd.h>
@@ -13,7 +12,7 @@
 #ifdef DEBUG
 #include <stdio.h>
 // debug function for figuring out the values of a triangle (use alias to print a human readable identifier for your triangle)
-int print_triangle(const triangle_t *const triangle, const char *const alias) {
+void print_triangle(const triangle_t *const triangle, const char *const alias) {
     const char msg[] = "Information for triangle %p (%s):\n";
     char border[100];
     memset(border, '=', 98);
@@ -57,7 +56,7 @@ int fb_init(fb_t *fb, const char *dev) {
     fb->pixel_size = fb_screeninfo.bits_per_pixel / 8;
     fb->size = fb->xres * fb->yres * fb->pixel_size;
 
-    void *const mmap_ret = mmap(NULL, fb->size, PROT_READ | PROT_WRITE, MAP_SHARED, fb->fd, 0);
+    void *mmap_ret = mmap(NULL, fb->size, PROT_READ | PROT_WRITE, MAP_SHARED, fb->fd, 0);
 
     if (mmap_ret == MAP_FAILED) {
         fb->buf = NULL;
@@ -73,9 +72,7 @@ int fb_init(fb_t *fb, const char *dev) {
 int fb_deinit(fb_t *fb) {
     int ret_val = 0;
 
-    if (close(fb->fd) < 0)
-        ret_val = -1;
-    if (munmap(fb->buf, fb->size) < 0)
+    if (close(fb->fd) < 0 || munmap(fb->buf, fb->size) < 0)
         ret_val = -1;
     else
         fb->buf = NULL;
@@ -123,7 +120,7 @@ static inline void fill_pixels(fb_t *fb, uint32_t y, uint32_t bound1, uint32_t b
 static inline double slope_r(const point2d_t *va, const point2d_t *vb) {
     const double diff_y = (double)vb->y - va->y;
 
-    printf("(vb.x - va.x) / (vb.y - va.y); delta_x / delta_y\n(%d - %d) / (%d - %d); %d / %d\n", (double)vb->x, (double)va->x, (double)vb->y, (double)va->y, (double)((double)vb->x - va->x), (double)diff_y);
+    printf("(vb.x - va.x) / (vb.y - va.y); delta_x / delta_y\n(%f - %f) / (%f - %f); %f / %f\n", (double)vb->x, (double)va->x, (double)vb->y, (double)va->y, (double)((double)vb->x - va->x), (double)diff_y);
     return diff_y == 0.0f ? 0.0f : ((double)vb->x - va->x) / diff_y;
 }
 
